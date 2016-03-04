@@ -22,6 +22,7 @@ class
 feature -- Access
 
 	item: detachable ANY
+			-- `item' of Current {VA_ITEM}.
 
 	rules: ARRAYED_LIST [attached like function_agent_anchor]
 			-- `rules' of Current {VA_ITEM}.
@@ -32,14 +33,12 @@ feature -- Access
 feature -- Status Report
 
 	is_valid: BOOLEAN
-			-- `is_valid' Current?
+			-- `is_valid' Current {VA_ITEM}?
 		do
-			check has_rules: attached rules as al_rules then
-				Result := across
-					al_rules as ic_rules
-				all
-					ic_rules.item ([item])
-				end
+			Result := across
+				rules as ic_rules
+			all
+				ic_rules.item ([item])
 			end
 		end
 
@@ -54,6 +53,7 @@ feature -- Settings
 		end
 
 	add_rule (a_rule: attached like function_agent_anchor)
+			-- `add_rule' `a_rule' to `rules' of Current {VA_ITEM}.
 		do
 			check has_rules: attached rules as al_rules then
 				al_rules.extend (a_rule)
@@ -63,5 +63,6 @@ feature -- Settings
 feature {NONE} -- Implementation: Constants
 
 	function_agent_anchor: detachable PREDICATE [ANY, TUPLE]
+			-- `function_agent_anchor' of Current {VA_ITEM}.
 
 end
