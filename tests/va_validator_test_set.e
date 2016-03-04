@@ -24,7 +24,8 @@ feature -- Test routines
 				-- Bring in an item
 			create l_item
 			l_item.set_item ("First M Last Suffix")
-			l_item.add_rule (agent not_empty)
+			l_item.add_rule (agent is_not_empty (?))
+			l_item.add_rule (agent has_four_names (?))
 
 				-- Now, start validating the `l_item'
 			l_validator.validate.start ([l_item])
@@ -34,13 +35,32 @@ feature -- Test routines
 			l_item.set_item ("")
 			l_validator.validate.start ([l_item])
 			assert ("empty_is_invalid", l_validator.is_invalid)
+
+				-- Finally, we will do a name without four names ...
+			l_item.set_item ("one two three four")
+			l_validator.validate.start ([l_item])
+			assert ("four_is_valid", l_validator.is_valid)
+
+			l_item.set_item ("one three four")
+			l_validator.validate.start ([l_item])
+			assert ("three_is_invalid", l_validator.is_invalid)
 		end
 
 feature {NONE} -- Implementation
 
-	not_empty (a_string: STRING): BOOLEAN
+	is_not_empty (a_string: STRING): BOOLEAN
+			-- `a_string' `is_not_empty'?
 		do
 			Result := not a_string.is_empty
+		end
+
+	has_four_names (a_string: STRING): BOOLEAN
+			-- `a_string' `has_four_names'?
+		local
+			l_list: LIST [STRING]
+		do
+			l_list := a_string.split (' ')
+			Result := l_list.count = 4
 		end
 
 end
