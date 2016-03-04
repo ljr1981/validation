@@ -64,7 +64,6 @@ feature -- Test routines
 
 			l_validator.validate.start ([l_nanp])
 			assert ("valid_number_at_first", l_validator.is_valid)
-			assert ("items_tells_same_story", l_validator.is_valid = l_nanp.is_valid)
 
 			l_nanp.set_phone_number ("0902951111")
 

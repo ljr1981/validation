@@ -63,6 +63,8 @@ feature -- Transition Operations
 			-- `set_validate' of `a_validation' to Result of `is_valid' or `is_invalid'.
 		do
 			is_valid := a_validation.item_rules.is_valid
+		ensure then
+			consistent: is_valid = a_validation.item_rules.is_valid
 		end
 
 feature -- State Assertions
