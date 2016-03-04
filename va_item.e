@@ -27,7 +27,7 @@ feature -- Access
 	rules: ARRAYED_LIST [attached like function_agent_anchor]
 			-- `rules' of Current {VA_ITEM}.
 		attribute
-			create Result.make (10)
+			create Result.make (Default_rules_capacity)
 		end
 
 	post_validation_message: detachable STRING
@@ -76,5 +76,11 @@ feature {NONE} -- Implementation: Constants
 
 	function_agent_anchor: detachable PREDICATE [ANY, TUPLE]
 			-- `function_agent_anchor' of Current {VA_ITEM}.
+
+	Default_rules_capacity: INTEGER
+			-- `Default_rules_capacity' of Current {VA_ITEM}.
+		once
+			Result := 5
+		end
 
 end

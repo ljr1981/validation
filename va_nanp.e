@@ -39,7 +39,8 @@ inherit
 		redefine
 			default_create,
 			item,
-			compute_post_validation_message
+			compute_post_validation_message,
+			Default_rules_capacity
 		end
 
 feature {NONE} -- Initialization
@@ -48,6 +49,8 @@ feature {NONE} -- Initialization
 			-- <Precursor>
 		do
 			Precursor
+				-- General Rules
+			rules.extend (agent is_default_digits_long)
 				-- NPA Rules (area code)
 			rules.extend (agent is_NPA_digit_1_valid)
 			rules.extend (agent is_NPA_digits_2_3_valid)
@@ -59,6 +62,8 @@ feature {NONE} -- Initialization
 			rules.extend (agent is_NXX_not_N11)
 				-- Subscriber number rules
 			rules.extend (agent is_subscriber_number_valid)
+		ensure then
+			rules_count: rules.count = Default_rules_capacity
 		end
 
 feature -- Access
@@ -255,6 +260,12 @@ feature {NONE} -- Implementation: Constants
 			-- `Digits_0_to_9' for testing.
 		once
 			Result := (0 |..| 9)
+		end
+
+	Default_rules_capacity: INTEGER
+			-- <Precursor>
+		once
+			Result := 9
 		end
 
 end
