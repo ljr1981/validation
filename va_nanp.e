@@ -84,6 +84,11 @@ feature -- Basic Operations
 			post_validation_message := Void
 			create l_message.make_empty
 
+				-- General rules messages (as-needed) ...
+			if not is_default_digits_long (item) then
+				l_message.append ("Number must be " + default_number_capacity.out + " digits long.%N")
+			end
+
 				-- Build NPA messages (as-needed) ...
 			if not is_npa_digit_1_valid (item) then
 				l_message.append ("First digit must be [2-9].%N")
@@ -127,19 +132,35 @@ feature -- Basic Operations
 			consistent: attached post_validation_message implies not is_valid
 		end
 
+feature {NONE} -- Implementation: General Rules
+
+	is_default_digits_long (a_item: like item): BOOLEAN
+			-- `is_default_digits_long' (see `default_number_capacity')?
+		do
+			Result := item.count = default_number_capacity
+		end
+
+	internal_use_only_is_default_length: BOOLEAN
+			-- `internal_use_only_is_default_length'?
+		do
+			Result := is_default_digits_long (item)
+		end
+
 feature {NONE} -- Implementation: NPA: Area Code Rules
 
 	is_NPA_digit_1_valid (a_item: like item): BOOLEAN
 			-- Allowed ranges: [2–9] for the first digit
 		do
-			Result := Digits_2_to_9.has (a_item [NPA_1].out.to_integer)
+			Result := internal_use_only_is_default_length and then
+						Digits_2_to_9.has (a_item [NPA_1].out.to_integer)
 		end
 
 	is_NPA_digits_2_3_valid (a_item: like item): BOOLEAN
 			-- Allowed ranges: [0-9] for the second and third digits.
 		do
-			Result := Digits_0_to_9.has (a_item [NPA_2].out.to_integer) and
-						Digits_0_to_9.has (a_item [NPA_3].out.to_integer)
+			Result := internal_use_only_is_default_length and then
+						(Digits_0_to_9.has (a_item [NPA_2].out.to_integer) and
+						Digits_0_to_9.has (a_item [NPA_3].out.to_integer))
 		end
 
 	is_NPA_not_n9x (a_item: like item): BOOLEAN
@@ -152,7 +173,8 @@ feature {NONE} -- Implementation: NPA: Area Code Rules
 				]"
 			EIS: "src=https://www.nationalnanpa.com/area_codes/index.html"
 		do
-			Result := a_item [NPA_2] /= '9'
+			Result := internal_use_only_is_default_length and then
+						a_item [NPA_2] /= '9'
 		end
 
 	is_NPA_not_n11 (a_item: like item): BOOLEAN
@@ -160,7 +182,8 @@ feature {NONE} -- Implementation: NPA: Area Code Rules
 		note
 			EIS: "src=https://www.nationalnanpa.com/area_codes/index.html"
 		do
-			Result := a_item [NPA_2] /= '1' and a_item [NPA_3] /= '1'
+			Result := internal_use_only_is_default_length and then
+						(a_item [NPA_2] /= '1' and a_item [NPA_3] /= '1')
 		end
 
 feature {NONE} -- Implementation: NXX: Central Office (exchange) code Rules
@@ -168,14 +191,16 @@ feature {NONE} -- Implementation: NXX: Central Office (exchange) code Rules
 	is_NXX_digit_1_2_to_9 (a_item: like item): BOOLEAN
 			-- Allowed ranges: [2–9] for the first digit
 		do
-			Result := Digits_2_to_9.has (a_item [NXX_1].out.to_integer)
+			Result := internal_use_only_is_default_length and then
+						Digits_2_to_9.has (a_item [NXX_1].out.to_integer)
 		end
 
 	is_NXX_digits_2_3_valid (a_item: like item): BOOLEAN
 			-- Allowed ranges: [0-9] for the second and third digits.
 		do
-			Result := Digits_0_to_9.has (a_item [NXX_2].out.to_integer) and
-						Digits_0_to_9.has (a_item [NXX_3].out.to_integer)
+			Result := internal_use_only_is_default_length and then
+						(Digits_0_to_9.has (a_item [NXX_2].out.to_integer) and
+						Digits_0_to_9.has (a_item [NXX_3].out.to_integer))
 		end
 
 	is_NXX_not_n11 (a_item: like item): BOOLEAN
@@ -184,7 +209,8 @@ feature {NONE} -- Implementation: NXX: Central Office (exchange) code Rules
 		note
 			EIS: "src=https://www.nationalnanpa.com/area_codes/index.html"
 		do
-			Result := a_item [NXX_2] /= '1' and a_item [NXX_3] /= '1'
+			Result := internal_use_only_is_default_length and then
+						(a_item [NXX_2] /= '1' and a_item [NXX_3] /= '1')
 		end
 
 feature {NONE} -- Implementation: Subscriber number rules
@@ -192,10 +218,11 @@ feature {NONE} -- Implementation: Subscriber number rules
 	is_subscriber_number_valid (a_item: like item): BOOLEAN
 			-- Allowed ranges: [0-9] for last 1-4 digits.
 		do
-			Result := Digits_0_to_9.has (a_item [SUB_1].out.to_integer) and
+			Result := internal_use_only_is_default_length and then
+						(Digits_0_to_9.has (a_item [SUB_1].out.to_integer) and
 						Digits_0_to_9.has (a_item [SUB_2].out.to_integer) and
 						Digits_0_to_9.has (a_item [SUB_3].out.to_integer) and
-						Digits_0_to_9.has (a_item [SUB_4].out.to_integer)
+						Digits_0_to_9.has (a_item [SUB_4].out.to_integer))
 		end
 
 feature {NONE} -- Implementation: Constants
@@ -229,8 +256,5 @@ feature {NONE} -- Implementation: Constants
 		once
 			Result := (0 |..| 9)
 		end
-
-invariant
-	digit_count: item.count = 0 xor item.count = default_number_capacity
 
 end

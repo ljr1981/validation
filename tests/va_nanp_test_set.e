@@ -44,6 +44,15 @@ feature -- Test routines
 			check has_message: attached l_nanp.post_validation_message as al_message then
 				assert_strings_equal ("valid_message", expected_message_1, al_message)
 			end
+
+				-- Test bad number length ...
+			l_nanp.set_phone_number ("1234")
+			l_validator.validate.start ([l_nanp])
+			assert ("invalid", l_validator.is_invalid)
+			l_nanp.compute_post_validation_message
+			check has_message: attached l_nanp.post_validation_message as al_message then
+				assert_strings_equal ("valid_message", expected_message_2, al_message)
+			end
 		end
 
 feature {NONE} -- Implementation: Support
@@ -53,6 +62,21 @@ First digit must be [2-9].
 2nd digit cannot be a [9].
 
 ]"
+
+	expected_message_2: STRING = "[
+Number must be 10 digits long.
+First digit must be [2-9].
+2nd/3rd digits must be [0-9].
+2nd digit cannot be a [9].
+2nd/3rd digits cannot be N11.
+First Area-code digit must be [2-9].
+2nd/3rd Area-code digits must be [0-9].
+2nd/3rd Area-code digits must not be N11.
+Last-four must be [0000-9999].
+
+]"
+
+
 
 end
 
