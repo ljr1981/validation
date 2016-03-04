@@ -3,11 +3,29 @@
 		Representation of a {VA_NANP} U.S. Phone Number {VA_ITEM}.
 		]"
 	design: "[
-
+		North American phone numbers (including the U.S. system) are based
+		on a specification, which has grown in detail with technologies over
+		the last 100+ years. This class represents a validation item that
+		attempts to comprehensively cover all of the meaningful rules
+		governing the validation of arbitrary phone numbers supplied to it.
+		]"
+	example: "[
+		Given: A {VA_VALIDATOR} with a {VA_MACHINE}, create a {VA_ITEM} and
+		assign it a "phone-number" (usually 10 digits). Once assigned, call
+		for the validator to validate.start ([item]) to prove if the item
+		is or is not a valid phone number. If not, then call the compute
+		post-validation message feature to discover a human-readable message
+		detailing what the validator found wrong with the phone number item.
 		]"
 	define: "NANP", "[
 				North American Numbering Plan. The NANP number format may be 
 				summarized in the notation NPA-NXX-xxxx
+				
+				Where:
+					
+					NPA = Area-code
+					NXX = Central office (exchange) code
+					XXXX = Subscriber number
 				]"
 	EIS: "src=https://en.wikipedia.org/wiki/North_American_Numbering_Plan"
 
