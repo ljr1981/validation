@@ -30,7 +30,7 @@ feature -- Test routines
 		do
 			create l_validator.make_with_machine (create {VA_MACHINE})
 			create l_nanp
-			l_nanp.set_item ("7702959729")
+			l_nanp.set_item ("7702951111")
 
 			l_validator.validate.start ([l_nanp])
 			assert ("valid_number_at_first", l_validator.is_valid)
