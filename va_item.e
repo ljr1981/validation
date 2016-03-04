@@ -30,10 +30,13 @@ feature -- Access
 			create Result.make (10)
 		end
 
+	post_validation_message: detachable STRING
+			-- `post_validation_message' populated after validate.start on `item'.
+
 feature -- Status Report
 
 	is_valid: BOOLEAN
-			-- `is_valid' Current {VA_ITEM}?
+			-- `is_valid' Current {VA_ITEM} by the `rules'?
 		do
 			Result := across
 				rules as ic_rules
@@ -45,7 +48,7 @@ feature -- Status Report
 feature -- Settings
 
 	set_item (a_item: attached like item)
-			-- `set_item' with `a_item'.
+			-- `set_item' with `a_item' into `item'.
 		do
 			item := a_item
 		ensure
@@ -53,7 +56,7 @@ feature -- Settings
 		end
 
 	add_rule (a_rule: attached like function_agent_anchor)
-			-- `add_rule' `a_rule' to `rules' of Current {VA_ITEM}.
+			-- `add_rule' `a_rule' into `rules' of Current {VA_ITEM}.
 		do
 			rules.extend (a_rule)
 		ensure

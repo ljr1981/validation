@@ -16,6 +16,8 @@ class
 
 inherit
 	VA_ITEM
+		rename
+			set_item as set_phone_number
 		redefine
 			default_create,
 			item
