@@ -35,10 +35,10 @@ feature -- Test routines
 			create l_nanp
 
 				-- Test "phone numbers" in an invalid range ...
-				-- (about 20K instances of a "bad number")
+				-- (about 10-20K instances of a "bad number")
 			l_start := randomizer.random_integer_in_range (1 |..| 100)
 			l_stop := 9_999_999
-			l_skip := 500 -- randomizer.random_integer_in_range (300 |..| 500)
+			l_skip := randomizer.random_integer_in_range (500 |..| 1_000)
 			across
 				(l_start |..| l_stop).new_cursor + l_skip as ic
 			loop
