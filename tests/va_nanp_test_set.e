@@ -22,8 +22,38 @@ inherit
 
 feature -- Test routines
 
-	nanp_tests
-			-- `nanp_tests'
+	nanp_random_tests
+			-- `nanp_random_tests'
+		local
+			l_nanp: VA_NANP
+			l_validator: VA_VALIDATOR
+			l_start,
+			l_stop,
+			l_skip: INTEGER
+		do
+			create l_validator.make_with_machine (create {VA_MACHINE})
+			create l_nanp
+
+				-- Test "phone numbers" in an invalid range ...
+				-- (about 20K instances of a "bad number")
+			l_start := randomizer.random_integer_in_range (1 |..| 100)
+			l_stop := 9_999_999
+			l_skip := 500 -- randomizer.random_integer_in_range (300 |..| 500)
+			across
+				(l_start |..| l_stop).new_cursor + l_skip as ic
+			loop
+				l_nanp.set_phone_number (ic.item.out)
+
+				l_validator.validate.start ([l_nanp])
+				assert ("none_valid", l_validator.is_invalid)
+
+				l_nanp.compute_post_validation_message
+				assert ("has_message", attached l_nanp.post_validation_message)
+			end
+		end
+
+	nanp_creation_and_basic_tests
+			-- `nanp_creation_and_basic_tests'
 		local
 			l_nanp: VA_NANP
 			l_validator: VA_VALIDATOR
@@ -45,7 +75,7 @@ feature -- Test routines
 				assert_strings_equal ("valid_message", expected_message_1, al_message)
 			end
 
-				-- Test bad number length ...
+				-- Test bad number length (too short) ...
 			l_nanp.set_phone_number ("1234")
 			l_validator.validate.start ([l_nanp])
 			assert ("invalid", l_validator.is_invalid)
@@ -76,7 +106,13 @@ Last-four must be [0000-9999].
 
 ]"
 
+feature {NONE} -- Implementation: Support
 
+	randomizer: RANDOMIZER
+			-- `randomizer' for Current test set.
+		once
+			create Result
+		end
 
 end
 
