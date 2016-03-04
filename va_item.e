@@ -55,9 +55,9 @@ feature -- Settings
 	add_rule (a_rule: attached like function_agent_anchor)
 			-- `add_rule' `a_rule' to `rules' of Current {VA_ITEM}.
 		do
-			check has_rules: attached rules as al_rules then
-				al_rules.extend (a_rule)
-			end
+			rules.extend (a_rule)
+		ensure
+			extended: rules.has (a_rule)
 		end
 
 feature {NONE} -- Implementation: Constants

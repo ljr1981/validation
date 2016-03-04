@@ -59,10 +59,10 @@ feature {NONE} -- Initialization: FSM
 
 feature -- Transition Operations
 
-	set_validate (a_item: TUPLE [test_item: VA_ITEM])
-			-- `set_validate' of `a_item' to Result of `is_valid' or `is_invalid'.
+	set_validate (a_validation: TUPLE [item_rules: VA_ITEM])
+			-- `set_validate' of `a_validation' to Result of `is_valid' or `is_invalid'.
 		do
-			is_valid := a_item.test_item.is_valid
+			is_valid := a_validation.item_rules.is_valid
 		end
 
 feature -- State Assertions
@@ -85,5 +85,8 @@ feature {NONE} -- Implementation: Constants
 	invalid: INTEGER = 2
 	validate_it: BOOLEAN = True
 	invalidate_it: BOOLEAN = False
+
+invariant
+	consistent: is_valid /= is_invalid
 
 end
