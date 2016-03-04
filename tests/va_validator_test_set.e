@@ -9,6 +9,14 @@ class
 
 inherit
 	EQA_TEST_SET
+		rename
+			assert as assert_old
+		end
+
+	EQA_COMMONLY_USED_ASSERTIONS
+		undefine
+			default_create
+		end
 
 feature -- Test routines
 
