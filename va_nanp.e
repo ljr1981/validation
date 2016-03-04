@@ -20,7 +20,8 @@ inherit
 			set_item as set_phone_number
 		redefine
 			default_create,
-			item
+			item,
+			compute_post_validation_message
 		end
 
 feature {NONE} -- Initialization
@@ -53,6 +54,59 @@ feature -- Access
 				]"
 		attribute
 			create Result.make (default_number_capacity)
+		end
+
+feature -- Basic Operations
+
+	compute_post_validation_message
+			-- <Precursor>
+		local
+			l_message: STRING
+		do
+			post_validation_message := Void
+			create l_message.make_empty
+
+				-- Build NPA messages (as-needed) ...
+			if not is_npa_digit_1_valid (item) then
+				l_message.append ("First digit must be [2-9].%N")
+			end
+
+			if not is_NPA_digits_2_3_valid (item) then
+				l_message.append ("2nd/3rd digits must be [0-9].%N")
+			end
+
+			if not is_NPA_not_n9x (item) then
+				l_message.append ("2nd digit cannot be a [9].%N")
+			end
+
+			if not is_npa_not_n11 (item) then
+				l_message.append ("2nd/3rd digits cannot be N11.%N")
+			end
+
+				-- Build NXX messages (as-needed) ...
+			if not is_nxx_digit_1_2_to_9 (item) then
+				l_message.append ("First Area-code digit must be [2-9].%N")
+			end
+
+			if not is_nxx_digits_2_3_valid (item) then
+				l_message.append ("2nd/3rd Area-code digits must be [0-9].%N")
+			end
+
+			if not is_nxx_not_n11 (item) then
+				l_message.append ("2nd/3rd Area-code digits must not be N11.%N")
+			end
+
+				-- Build subscriber messages (as-needed) ...
+			if not is_subscriber_number_valid (item) then
+				l_message.append ("Last-four must be [0000-9999].%N")
+			end
+
+				-- Publish the message if we have any message ...
+			if not l_message.is_empty then
+				post_validation_message := l_message
+			end
+		ensure then
+			consistent: attached post_validation_message implies not is_valid
 		end
 
 feature {NONE} -- Implementation: NPA: Area Code Rules

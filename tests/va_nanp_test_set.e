@@ -34,7 +34,25 @@ feature -- Test routines
 
 			l_validator.validate.start ([l_nanp])
 			assert ("valid_number_at_first", l_validator.is_valid)
+
+			l_nanp.set_phone_number ("0902951111")
+
+				-- Test the computed post-validation message ...
+			l_validator.validate.start ([l_nanp])
+			assert ("invalid", l_validator.is_invalid)
+			l_nanp.compute_post_validation_message
+			check has_message: attached l_nanp.post_validation_message as al_message then
+				assert_strings_equal ("valid_message", expected_message_1, al_message)
+			end
 		end
+
+feature {NONE} -- Implementation: Support
+
+	expected_message_1: STRING = "[
+First digit must be [2-9].
+2nd digit cannot be a [9].
+
+]"
 
 end
 

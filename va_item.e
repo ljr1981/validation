@@ -33,6 +33,15 @@ feature -- Access
 	post_validation_message: detachable STRING
 			-- `post_validation_message' populated after validate.start on `item'.
 
+feature -- Basic Operations
+
+	compute_post_validation_message
+			-- `compute_post_validation_message' (if any).
+			-- Redefine in descendents as-needed ...
+		do
+			do_nothing
+		end
+
 feature -- Status Report
 
 	is_valid: BOOLEAN
