@@ -95,14 +95,6 @@ First digit must be [2-9].
 
 	expected_message_2: STRING = "[
 Number must be 10 digits long.
-First digit must be [2-9].
-2nd/3rd digits must be [0-9].
-2nd digit cannot be a [9].
-2nd/3rd digits cannot be N11.
-First Area-code digit must be [2-9].
-2nd/3rd Area-code digits must be [0-9].
-2nd/3rd Area-code digits must not be N11.
-Last-four must be [0000-9999].
 
 ]"
 

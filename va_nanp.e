@@ -90,43 +90,43 @@ feature -- Basic Operations
 			create l_message.make_empty
 
 				-- General rules messages (as-needed) ...
-			if not is_default_digits_long (item) then
+			if not internal_use_only_is_default_length then
 				l_message.append ("Number must be " + default_number_capacity.out + " digits long.%N")
-			end
+			else
+					-- Build NPA messages (as-needed) ...
+				if not is_npa_digit_1_valid (item) then
+					l_message.append ("First digit must be [2-9].%N")
+				end
 
-				-- Build NPA messages (as-needed) ...
-			if not is_npa_digit_1_valid (item) then
-				l_message.append ("First digit must be [2-9].%N")
-			end
+				if not is_NPA_digits_2_3_valid (item) then
+					l_message.append ("2nd/3rd digits must be [0-9].%N")
+				end
 
-			if not is_NPA_digits_2_3_valid (item) then
-				l_message.append ("2nd/3rd digits must be [0-9].%N")
-			end
+				if not is_NPA_not_n9x (item) then
+					l_message.append ("2nd digit cannot be a [9].%N")
+				end
 
-			if not is_NPA_not_n9x (item) then
-				l_message.append ("2nd digit cannot be a [9].%N")
-			end
+				if not is_npa_not_n11 (item) then
+					l_message.append ("2nd/3rd digits cannot be N11.%N")
+				end
 
-			if not is_npa_not_n11 (item) then
-				l_message.append ("2nd/3rd digits cannot be N11.%N")
-			end
+					-- Build NXX messages (as-needed) ...
+				if not is_nxx_digit_1_2_to_9 (item) then
+					l_message.append ("First Area-code digit must be [2-9].%N")
+				end
 
-				-- Build NXX messages (as-needed) ...
-			if not is_nxx_digit_1_2_to_9 (item) then
-				l_message.append ("First Area-code digit must be [2-9].%N")
-			end
+				if not is_nxx_digits_2_3_valid (item) then
+					l_message.append ("2nd/3rd Area-code digits must be [0-9].%N")
+				end
 
-			if not is_nxx_digits_2_3_valid (item) then
-				l_message.append ("2nd/3rd Area-code digits must be [0-9].%N")
-			end
+				if not is_nxx_not_n11 (item) then
+					l_message.append ("2nd/3rd Area-code digits must not be N11.%N")
+				end
 
-			if not is_nxx_not_n11 (item) then
-				l_message.append ("2nd/3rd Area-code digits must not be N11.%N")
-			end
-
-				-- Build subscriber messages (as-needed) ...
-			if not is_subscriber_number_valid (item) then
-				l_message.append ("Last-four must be [0000-9999].%N")
+					-- Build subscriber messages (as-needed) ...
+				if not is_subscriber_number_valid (item) then
+					l_message.append ("Last-four must be [0000-9999].%N")
+				end
 			end
 
 				-- Publish the message if we have any message ...
@@ -155,6 +155,11 @@ feature {NONE} -- Implementation: NPA: Area Code Rules
 
 	is_NPA_digit_1_valid (a_item: like item): BOOLEAN
 			-- Allowed ranges: [2–9] for the first digit
+		note
+			define: "and then", "[
+						and then, or else, implies Semistrict logic 
+						operators (evaluation stops when the result is known).
+				]"
 		do
 			Result := internal_use_only_is_default_length and then
 						Digits_2_to_9.has (a_item [NPA_1].out.to_integer)
