@@ -160,6 +160,31 @@ feature {NONE} -- Implementation: NPA: Area Code Rules
 						and then, or else, implies Semistrict logic 
 						operators (evaluation stops when the result is known).
 				]"
+			define: "semistrict", "[
+						There is a need for non-commutative variants of and and or.
+						
+						Touch of Semantics:
+						
+						Semistrict boolean operators
+						
+						Consider two expressions a and b which may be defined or not, and if defined 
+						have boolean values. Then:
+						
+						•a and then b has the same value as a and b if both a and b are defined, and 
+							in addition has value False whenever a is defined and has value False.
+						•a or else b has the same value as a or b if both a and b are defined, and 
+							in addition has value True whenever a is defined and has value True.
+						
+						— Touch of Class, page 92.
+				]"
+			define: "non-commutative", "[
+						Commutative is define as: involving the condition that a group of quantities 
+						connected by operators gives the same result whatever the order of the 
+						quantities involved, e.g., a × b = b × a.
+						
+						Therefore, non-commutative indicates the "Semistrict" (logically opposite) variant,
+						where (a and then b) /= (b and then a).
+				]"
 		do
 			Result := internal_use_only_is_default_length and then
 						Digits_2_to_9.has (a_item [NPA_1].out.to_integer)
