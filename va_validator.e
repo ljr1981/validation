@@ -30,6 +30,8 @@ class
 inherit
 	SM_OBJECT
 
+	VA_ANY
+	
 create
 	make_with_machine
 

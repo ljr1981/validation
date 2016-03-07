@@ -19,6 +19,9 @@ note
 class
 	VA_ITEM
 
+inherit
+	VA_ANY
+	
 feature -- Access
 
 	item: detachable ANY
