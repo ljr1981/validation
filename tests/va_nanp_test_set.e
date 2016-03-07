@@ -94,13 +94,20 @@ feature -- Test routines
 		local
 			l_nanp: VA_NANP
 			l_validator: VA_VALIDATOR
+			l_message: STRING
 		do
 			create l_validator.make_with_machine (create {VA_MACHINE})
 			create l_nanp
 			l_nanp.set_phone_number ("7702951111")
 
 			l_validator.validate.start ([l_nanp])
-			assert ("valid_number_at_first", l_validator.is_valid)
+			l_nanp.compute_post_validation_message
+			if attached l_nanp.post_validation_message as al_message then
+				l_message := al_message
+			else
+				l_message := "ought_to_pass"
+			end
+			assert (l_message, l_validator.is_valid)
 
 			l_nanp.set_phone_number ("0902951111")
 

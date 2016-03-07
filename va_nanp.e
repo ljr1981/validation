@@ -40,7 +40,8 @@ inherit
 			default_create,
 			item,
 			compute_post_validation_message,
-			Default_rules_capacity
+			Default_rules_capacity,
+			set_phone_number
 		end
 
 feature {NONE} -- Initialization
@@ -49,19 +50,14 @@ feature {NONE} -- Initialization
 			-- <Precursor>
 		do
 			Precursor
-				-- General Rules
+			create area_code
+			create exchange_code
+			create subscriber_number
+
 			rules.extend (agent is_default_digits_long)
-				-- NPA Rules (area code)
-			rules.extend (agent is_NPA_digit_1_valid)
-			rules.extend (agent is_NPA_digits_2_3_valid)
-			rules.extend (agent is_NPA_not_n9x)
-			rules.extend (agent is_NPA_not_n11)
-				-- Central office rules
-			rules.extend (agent is_NXX_digit_1_2_to_9)
-			rules.extend (agent is_NXX_digits_2_3_valid)
-			rules.extend (agent is_NXX_not_N11)
-				-- Subscriber number rules
-			rules.extend (agent is_subscriber_number_valid)
+			rules.extend (agent area_code.is_valid)
+			rules.extend (agent exchange_code.is_valid)
+			rules.extend (agent subscriber_number.is_valid)
 		ensure then
 			rules_count: rules.count = Default_rules_capacity
 		end
@@ -71,12 +67,31 @@ feature -- Access
 	item: STRING
 			-- <Precursor>
 			-- NPA-NXX-xxxx (without "-" characters)
-		note
-			design: "[
-				NPA-NXX-xxxx (without "-" characters)
-				]"
 		attribute
 			create Result.make (default_number_capacity)
+		end
+
+	area_code: VA_NANP_NPA
+
+	exchange_code: VA_NANP_NXX
+
+	subscriber_number: VA_NANP_SUBSCRIBER
+
+feature -- Settings
+
+	set_phone_number (a_number: like item)
+			-- `set_phone_number' with `a_number'.
+		do
+			item := a_number
+			if a_number.count >= area_code_stop then
+				area_code.set_area_code (a_number.substring (area_code_start, area_code_stop))
+			end
+			if a_number.count >= exchange_stop then
+				exchange_code.set_exchange (a_number.substring (exchange_start, exchange_stop))
+			end
+			if a_number.count = subscriber_stop then
+				subscriber_number.set_subscriber_number (a_number.substring (subscriber_start, subscriber_stop))
+			end
 		end
 
 feature -- Basic Operations
@@ -94,38 +109,19 @@ feature -- Basic Operations
 				l_message.append ("Number must be " + default_number_capacity.out + " digits long.%N")
 			else
 					-- Build NPA messages (as-needed) ...
-				if not is_npa_digit_1_valid (item) then
-					l_message.append ("First digit must be [2-9].%N")
-				end
-
-				if not is_NPA_digits_2_3_valid (item) then
-					l_message.append ("2nd/3rd digits must be [0-9].%N")
-				end
-
-				if not is_NPA_not_n9x (item) then
-					l_message.append ("2nd digit cannot be a [9].%N")
-				end
-
-				if not is_npa_not_n11 (item) then
-					l_message.append ("2nd/3rd digits cannot be N11.%N")
+				if not area_code.is_valid then
+					area_code.compute_post_validation_message
+					if attached area_code.post_validation_message as al_message then
+						l_message.append_string (al_message)
+					end
 				end
 
 					-- Build NXX messages (as-needed) ...
-				if not is_nxx_digit_1_2_to_9 (item) then
-					l_message.append ("First Area-code digit must be [2-9].%N")
-				end
-
-				if not is_nxx_digits_2_3_valid (item) then
-					l_message.append ("2nd/3rd Area-code digits must be [0-9].%N")
-				end
-
-				if not is_nxx_not_n11 (item) then
-					l_message.append ("2nd/3rd Area-code digits must not be N11.%N")
-				end
-
-					-- Build subscriber messages (as-needed) ...
-				if not is_subscriber_number_valid (item) then
-					l_message.append ("Last-four must be [0000-9999].%N")
+				if not exchange_code.is_valid then
+					exchange_code.compute_post_validation_message
+					if attached exchange_code.post_validation_message as al_message then
+						l_message.append_string (al_message)
+					end
 				end
 			end
 
@@ -151,148 +147,19 @@ feature {NONE} -- Implementation: General Rules
 			Result := is_default_digits_long (item)
 		end
 
-feature {NONE} -- Implementation: NPA: Area Code Rules
-
-	is_NPA_digit_1_valid (a_item: like item): BOOLEAN
-			-- Allowed ranges: [2–9] for the first digit
-		note
-			define: "and then", "[
-						and then, or else, implies Semistrict logic 
-						operators (evaluation stops when the result is known).
-				]"
-			define: "semistrict", "[
-						There is a need for non-commutative variants of and and or.
-						
-						Touch of Semantics:
-						
-						Semistrict boolean operators
-						
-						Consider two expressions a and b which may be defined or not, and if defined 
-						have boolean values. Then:
-						
-						•a and then b has the same value as a and b if both a and b are defined, and 
-							in addition has value False whenever a is defined and has value False.
-						•a or else b has the same value as a or b if both a and b are defined, and 
-							in addition has value True whenever a is defined and has value True.
-						
-						— Touch of Class, page 92.
-				]"
-			define: "non-commutative", "[
-						Commutative is define as: involving the condition that a group of quantities 
-						connected by operators gives the same result whatever the order of the 
-						quantities involved, e.g., a × b = b × a.
-						
-						Therefore, non-commutative indicates the "Semistrict" (logically opposite) variant,
-						where (a and then b) /= (b and then a).
-				]"
-		do
-			Result := internal_use_only_is_default_length and then
-						Digits_2_to_9.has (a_item [NPA_1].out.to_integer)
-		end
-
-	is_NPA_digits_2_3_valid (a_item: like item): BOOLEAN
-			-- Allowed ranges: [0-9] for the second and third digits.
-		do
-			Result := internal_use_only_is_default_length and then
-						(Digits_0_to_9.has (a_item [NPA_2].out.to_integer) and
-						Digits_0_to_9.has (a_item [NPA_3].out.to_integer))
-		end
-
-	is_NPA_not_n9x (a_item: like item): BOOLEAN
-			-- The NANP is not assigning area codes with 9 as the second digit.
-		note
-			specification: "[
-				The 80 codes in this format, called expansion codes, 
-				have been reserved for use during the period when the 
-				current 10-digit NANP number format undergoes expansion.
-				]"
-			EIS: "src=https://www.nationalnanpa.com/area_codes/index.html"
-		do
-			Result := internal_use_only_is_default_length and then
-						a_item [NPA_2] /= '9'
-		end
-
-	is_NPA_not_n11 (a_item: like item): BOOLEAN
-			-- N11: These 8 ERCs, called service codes, are not used as area codes.
-		note
-			EIS: "src=https://www.nationalnanpa.com/area_codes/index.html"
-		do
-			Result := internal_use_only_is_default_length and then
-						(a_item [NPA_2] /= '1' and a_item [NPA_3] /= '1')
-		end
-
-feature {NONE} -- Implementation: NXX: Central Office (exchange) code Rules
-
-	is_NXX_digit_1_2_to_9 (a_item: like item): BOOLEAN
-			-- Allowed ranges: [2–9] for the first digit
-		do
-			Result := internal_use_only_is_default_length and then
-						Digits_2_to_9.has (a_item [NXX_1].out.to_integer)
-		end
-
-	is_NXX_digits_2_3_valid (a_item: like item): BOOLEAN
-			-- Allowed ranges: [0-9] for the second and third digits.
-		do
-			Result := internal_use_only_is_default_length and then
-						(Digits_0_to_9.has (a_item [NXX_2].out.to_integer) and
-						Digits_0_to_9.has (a_item [NXX_3].out.to_integer))
-		end
-
-	is_NXX_not_n11 (a_item: like item): BOOLEAN
-			-- N11: in geographic area codes the third digit of the
-			--		exchange cannot be 1 if the second digit is also 1
-		note
-			EIS: "src=https://www.nationalnanpa.com/area_codes/index.html"
-		do
-			Result := internal_use_only_is_default_length and then
-						(a_item [NXX_2] /= '1' and a_item [NXX_3] /= '1')
-		end
-
-feature {NONE} -- Implementation: Subscriber number rules
-
-	is_subscriber_number_valid (a_item: like item): BOOLEAN
-			-- Allowed ranges: [0-9] for last 1-4 digits.
-		do
-			Result := internal_use_only_is_default_length and then
-						(Digits_0_to_9.has (a_item [SUB_1].out.to_integer) and
-						Digits_0_to_9.has (a_item [SUB_2].out.to_integer) and
-						Digits_0_to_9.has (a_item [SUB_3].out.to_integer) and
-						Digits_0_to_9.has (a_item [SUB_4].out.to_integer))
-		end
-
 feature {NONE} -- Implementation: Constants
 
 	default_number_capacity: INTEGER = 10
+			-- `default_number_capacity' for Current {VA_NANP} Number.
 
-		-- Area code digit constants
-	NPA_1: INTEGER = 1
-	NPA_2: INTEGER = 2
-	NPA_3: INTEGER = 3
-
-		-- Central office digit constants
-	NXX_1: INTEGER = 4
-	NXX_2: INTEGER = 5
-	NXX_3: INTEGER = 6
-
-		-- Subscriber digit constants
-	SUB_1: INTEGER = 7
-	SUB_2: INTEGER = 8
-	SUB_3: INTEGER = 9
-	SUB_4: INTEGER = 10
-
-	Digits_2_to_9: INTEGER_INTERVAL
-			-- `Digits_2_to_9' for testing.
-		once
-			Result := (2 |..| 9)
-		end
-
-	Digits_0_to_9: INTEGER_INTERVAL
-			-- `Digits_0_to_9' for testing.
-		once
-			Result := (0 |..| 9)
-		end
-
-	Default_rules_capacity: INTEGER = 9
+	Default_rules_capacity: INTEGER = 4
 			-- <Precursor>
+
+	area_code_start: INTEGER = 1
+	area_code_stop: INTEGER = 3
+	exchange_start: INTEGER = 4
+	exchange_stop: INTEGER = 6
+	subscriber_start: INTEGER = 7
+	subscriber_stop: INTEGER = 10
 
 end
