@@ -292,10 +292,7 @@ feature {NONE} -- Implementation: Constants
 			Result := (0 |..| 9)
 		end
 
-	Default_rules_capacity: INTEGER
+	Default_rules_capacity: INTEGER = 9
 			-- <Precursor>
-		once
-			Result := 9
-		end
 
 end

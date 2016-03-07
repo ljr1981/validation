@@ -79,8 +79,8 @@ feature {NONE} -- Implementation: Constants
 
 	Default_rules_capacity: INTEGER
 			-- `Default_rules_capacity' of Current {VA_ITEM}.
-		once
-			Result := 5
+		do
+			Result := 0
 		end
 
 end
