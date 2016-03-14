@@ -11,6 +11,7 @@
 		<library name="randomizer" location="$GITHUB\randomizer\randomizer.ecf"/>
 		<library name="state_machine" location="$GITHUB\state_machine\state_machine.ecf"/>
 		<library name="uuid" location="$ISE_LIBRARY\library\uuid\uuid-safe.ecf"/>
+		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2-safe.ecf"/>
 		<cluster name="validation" location=".\" recursive="true">
 			<file_rule>
 				<exclude>/EIFGENs$</exclude>
@@ -35,7 +36,6 @@
 		</option>
 		<setting name="console_application" value="false"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing-safe.ecf"/>
-		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2-safe.ecf"/>
 		<cluster name="tests" location=".\tests\" recursive="true"/>
 	</target>
 </system>

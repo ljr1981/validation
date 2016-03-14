@@ -92,39 +92,39 @@ feature -- Test routines
 	nanp_creation_and_basic_tests
 			-- `nanp_creation_and_basic_tests'
 		local
-			l_nanp: VA_NANP
+			l_item: VA_NANP
 			l_validator: VA_VALIDATOR
 			l_message: STRING
 		do
 			create l_validator.make_with_machine (create {VA_MACHINE})
-			create l_nanp
-			l_nanp.set_phone_number ("7702951111")
+			create l_item
+			l_item.set_phone_number ("7702951111")
 
-			l_validator.validate.start ([l_nanp])
-			l_nanp.compute_post_validation_message
-			if attached l_nanp.post_validation_message as al_message then
+			l_validator.validate.start ([l_item])
+			l_item.compute_post_validation_message
+			if attached l_item.post_validation_message as al_message then
 				l_message := al_message
 			else
 				l_message := "ought_to_pass"
 			end
 			assert (l_message, l_validator.is_valid)
 
-			l_nanp.set_phone_number ("0902951111")
+			l_item.set_phone_number ("0902951111")
 
 				-- Test the computed post-validation message ...
-			l_validator.validate.start ([l_nanp])
+			l_validator.validate.start ([l_item])
 			assert ("invalid", l_validator.is_invalid)
-			l_nanp.compute_post_validation_message
-			check has_message: attached l_nanp.post_validation_message as al_message then
+			l_item.compute_post_validation_message
+			check has_message: attached l_item.post_validation_message as al_message then
 				assert_strings_equal ("valid_message", expected_message_1, al_message)
 			end
 
 				-- Test bad number length (too short) ...
-			l_nanp.set_phone_number ("1234")
-			l_validator.validate.start ([l_nanp])
+			l_item.set_phone_number ("1234")
+			l_validator.validate.start ([l_item])
 			assert ("invalid", l_validator.is_invalid)
-			l_nanp.compute_post_validation_message
-			check has_message: attached l_nanp.post_validation_message as al_message then
+			l_item.compute_post_validation_message
+			check has_message: attached l_item.post_validation_message as al_message then
 				assert_strings_equal ("valid_message", expected_message_2, al_message)
 			end
 		end
