@@ -31,7 +31,7 @@ inherit
 	SM_OBJECT
 
 	VA_ANY
-	
+
 create
 	make_with_machine
 
@@ -46,16 +46,16 @@ feature {NONE} -- Initialization: FSM
 	initialize_state_assertions (a_machine: SM_MACHINE)
 			-- <Precursor>
 		do
-			a_machine.add_state ([<<agent is_valid>>])
-			a_machine.add_state ([<<agent is_invalid>>])
+			a_machine.add_state ([<<agent is_valid>>, "Valid"])
+			a_machine.add_state ([<<agent is_invalid>>, "Invalid"])
 		end
 
 	initialize_transition_operations (a_machine: SM_MACHINE)
 			-- <Precursor>
 		do
 			a_machine.add_transitions (<<		-- From		To			set on-Trigger					do Transition ops		Post-trans ops
-					create {SM_TRANSITION}.make (valid, 	invalid, 	agent validate.set, 			<<agent set_validate>>, 	<<>>),
-					create {SM_TRANSITION}.make (invalid, 	valid, 		agent validate.set, 			<<agent set_validate>>, 	<<>>)
+					create {SM_TRANSITION}.make ([valid, 	invalid, ""], 	agent validate.set, 			<<agent set_validate>>, 	<<>>),
+					create {SM_TRANSITION}.make ([invalid, 	valid, ""], 	agent validate.set, 			<<agent set_validate>>, 	<<>>)
 										>>)
 		end
 
