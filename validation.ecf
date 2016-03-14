@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="validation" uuid="5BC4A860-69F5-4B89-9706-5A1EE9965F4F">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="validation" uuid="5BC4A860-69F5-4B89-9706-5A1EE9965F4F" library_target="validation">
+	<description>Validation of Objects Library</description>
 	<target name="validation">
 		<root all_classes="true"/>
 		<option warning="true" is_obsolete_routine_type="true" void_safety="transitional" syntax="provisional">
