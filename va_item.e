@@ -2,26 +2,14 @@ note
 	description: "[
 		Representation of a {VA_ITEM}.
 		]"
-	design: "[
-		A validation item--that is--an item which has its
-		rules which can be validated by a {VA_VALIDATOR}.
-		
-		Give special attention to: 
-			
-			function_agent_anchor: detachable PREDICATE [ANY, TUPLE]
-		
-		The PREDICATE class is especially designed for the notion of
-		BOOLEAN query agents held in a list and then checked either
-		one-by-one or together as a group Result (which is what happens
-		here in this class).
-		]"
+	design: "See notes at end of class."
 
 class
 	VA_ITEM
 
 inherit
 	VA_ANY
-	
+
 feature -- Access
 
 	item: detachable ANY
@@ -42,7 +30,7 @@ feature -- Basic Operations
 			-- `compute_post_validation_message' (if any).
 			-- Redefine in descendents as-needed ...
 		do
-			do_nothing
+			do_nothing -- Until redefinition ...
 		end
 
 feature -- Status Report
@@ -51,10 +39,10 @@ feature -- Status Report
 			-- `is_valid' Current {VA_ITEM} by the `rules'?
 		do
 			Result := across
-				rules as ic_rules
-			all
-				ic_rules.item ([item])
-			end
+							rules as ic_rules
+						all
+							ic_rules.item ([item])
+						end
 		end
 
 feature -- Settings
@@ -82,8 +70,32 @@ feature {NONE} -- Implementation: Constants
 
 	Default_rules_capacity: INTEGER
 			-- `Default_rules_capacity' of Current {VA_ITEM}.
+		note
+			design: "[
+				Normally, we would make this a constant or just
+				remove the "do .. end" (below). However, for type
+				conformance rules about feature redefinition, we
+				have this as a "do .. end", which can later be redefined
+				to a constant in descendent classes without compiler
+				complaint.
+				]"
 		do
 			Result := 0
 		end
+
+note
+	design: "[
+		A validation item--that is--an item which has its
+		rules which can be validated by a {VA_VALIDATOR}.
+
+		Give special attention to:
+
+			function_agent_anchor: detachable PREDICATE [ANY, TUPLE]
+
+		The PREDICATE class is especially designed for the notion of
+		BOOLEAN query agents held in a list and then checked either
+		one-by-one or together as a group Result (which is what happens
+		here in this class).
+		]"
 
 end

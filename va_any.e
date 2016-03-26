@@ -1,9 +1,9 @@
 note
 	description: "[
-		Abstract notion of a {VA_ANY}
+		Abstract notion of a {VA_ANY} root class.
 		]"
 
-deferred class
+class
 	VA_ANY
 
 end

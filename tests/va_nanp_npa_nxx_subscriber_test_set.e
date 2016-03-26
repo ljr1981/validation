@@ -62,7 +62,7 @@ feature -- Test routines
 			l_nxx.set_exchange ("202")
 			assert ("invalid", l_nxx.is_valid)
 			across
-				(0 |..| 9) as ic
+				0 |..| 9 as ic
 			from
 				l_pass := 0
 				l_fail := 0
@@ -79,7 +79,7 @@ feature -- Test routines
 
 				-- Digit 2
 			across
-				(0 |..| 9) as ic
+				0 |..| 9 as ic
 			from
 				l_pass := 0
 				l_fail := 0
@@ -96,7 +96,7 @@ feature -- Test routines
 
 				-- Digit 3
 			across
-				(0 |..| 9) as ic
+				0 |..| 9 as ic
 			from
 				l_pass := 0
 				l_fail := 0
@@ -112,16 +112,16 @@ feature -- Test routines
 			assert_integers_equal ("nxx_fail_count_3", 1, l_fail)
 
 			across
-				(0 |..| 9) as ic_1
+				0 |..| 9 as ic_1
 			from
 				l_pass := 0
 				l_fail := 0
 			loop
 				across
-					(0 |..| 9) as ic_2
+					0 |..| 9 as ic_2
 				loop
 					across
-						(0 |..| 9) as ic_3
+						0 |..| 9 as ic_3
 					loop
 						l_nxx.set_exchange (ic_1.item.out + ic_2.item.out + ic_3.item.out)
 						if l_nxx.is_valid then
@@ -151,7 +151,7 @@ feature -- Test routines
 			l_npa.set_area_code ("202")
 			assert ("invalid", l_npa.is_valid)
 			across
-				(0 |..| 9) as ic
+				0 |..| 9 as ic
 			from
 				l_pass := 0
 				l_fail := 0
@@ -168,7 +168,7 @@ feature -- Test routines
 
 				-- Digit 2
 			across
-				(0 |..| 9) as ic
+				0 |..| 9 as ic
 			from
 				l_pass := 0
 				l_fail := 0
@@ -185,7 +185,7 @@ feature -- Test routines
 
 				-- Digit 3
 			across
-				(0 |..| 9) as ic
+				0 |..| 9 as ic
 			from
 				l_pass := 0
 				l_fail := 0
@@ -201,16 +201,16 @@ feature -- Test routines
 			assert_integers_equal ("npa_fail_count_3", 1, l_fail)
 
 			across
-				(0 |..| 9) as ic_1
+				0 |..| 9 as ic_1
 			from
 				l_pass := 0
 				l_fail := 0
 			loop
 				across
-					(0 |..| 9) as ic_2
+					0 |..| 9 as ic_2
 				loop
 					across
-						(0 |..| 9) as ic_3
+						0 |..| 9 as ic_3
 					loop
 						l_npa.set_area_code (ic_1.item.out + ic_2.item.out + ic_3.item.out)
 						if l_npa.is_valid then

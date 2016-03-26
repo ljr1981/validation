@@ -2,28 +2,8 @@ note
 	description: "[
 		Abstract notion of a {VA_VALIDATOR}.
 		]"
-	design: "[
-		A {VA_VALIDATOR} is a validator of {VA_ITEM} objects.
-		The item objects have their items with their rules.
-		The purpose of this class is to provide a means of having
-		a single validator, which validates one-or-more items.
-		
-		For the {VA_VALIDATOR} to work, all it needs is a
-		{SM_MACHINE} (aka VA_MACHINE) and a set of {VA_ITEM}s.
-		
-		A call like the following example will validate an item:
-		
-			l_validator.validate.start ([l_item])
-		
-		The only requirement before making this call is to create
-		the `l_validator' with a state machine and then create the
-		`l_item' {VA_ITEM} objects (one or more) and give them
-		(as needed) to the `validate.start'.
-		
-		You may then pick-up your validation results in the
-		`is_valid' or `is_invalid' queries.
-		]"
-
+	design: "See end of class notes."
+	
 class
 	VA_VALIDATOR
 
@@ -92,5 +72,28 @@ feature {NONE} -- Implementation: Constants
 
 invariant
 	consistent: is_valid /= is_invalid
+
+note
+	design: "[
+		A {VA_VALIDATOR} is a validator of {VA_ITEM} objects.
+		The item objects have their items with their rules.
+		The purpose of this class is to provide a means of having
+		a single validator, which validates one-or-more items.
+
+		For the {VA_VALIDATOR} to work, all it needs is a
+		{SM_MACHINE} (aka VA_MACHINE) and a set of {VA_ITEM}s.
+
+		A call like the following example will validate an item:
+
+			l_validator.validate.start ([l_item])
+
+		The only requirement before making this call is to create
+		the `l_validator' with a state machine and then create the
+		`l_item' {VA_ITEM} objects (one or more) and give them
+		(as needed) to the `validate.start'.
+
+		You may then pick-up your validation results in the
+		`is_valid' or `is_invalid' queries.
+		]"
 
 end

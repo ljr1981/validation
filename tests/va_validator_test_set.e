@@ -64,11 +64,8 @@ feature {NONE} -- Implementation
 
 	has_four_names (a_string: STRING): BOOLEAN
 			-- `a_string' `has_four_names'?
-		local
-			l_list: LIST [STRING]
 		do
-			l_list := a_string.split (' ')
-			Result := l_list.count = 4
+			Result := (a_string.split (' ')).count = 4
 		end
 
 end

@@ -40,13 +40,13 @@ feature {NONE} -- Implementation: Constants
 	Digits_2_to_9: INTEGER_INTERVAL
 			-- `Digits_2_to_9' for testing.
 		once
-			Result := (2 |..| 9)
+			Result := 2 |..| 9
 		end
 
 	Digits_0_to_9: INTEGER_INTERVAL
 			-- `Digits_0_to_9' for testing.
 		once
-			Result := (0 |..| 9)
+			Result := 0 |..| 9
 		end
 
 	Default_number_capacity: INTEGER
