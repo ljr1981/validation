@@ -8,8 +8,8 @@
 		</option>
 		<setting name="console_application" value="true"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="randomizer" location="$GITHUB\randomizer\randomizer.ecf"/>
-		<library name="state_machine" location="$GITHUB\state_machine\state_machine.ecf"/>
+		<library name="randomizer" location="..\randomizer\randomizer.ecf"/>
+		<library name="state_machine" location="..\state_machine\state_machine.ecf"/>
 		<library name="uuid" location="$ISE_LIBRARY\library\uuid\uuid-safe.ecf"/>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2-safe.ecf"/>
 		<cluster name="validation" location=".\" recursive="true">
